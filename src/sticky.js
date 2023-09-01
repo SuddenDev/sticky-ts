@@ -53,7 +53,20 @@ class Sticky {
       if (document.readyState === "complete") {
         clearInterval(pageLoaded);
 
-        const elements = document.querySelectorAll(this.selector);
+        let elements = [];
+        if (typeof this.selector === "string") {
+          elements = document.querySelectorAll(this.selector);
+        }
+        if (this.selector instanceof HTMLElement) {
+          elements.push(this.selector);
+        }
+        if (
+          this.selector instanceof HTMLCollection ||
+          Array.isArray(this.selector)
+        ) {
+          elements = this.selector;
+        }
+
         this.forEach(elements, (element) => this.renderElement(element));
       }
     }, 10);
