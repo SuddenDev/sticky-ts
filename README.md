@@ -1,6 +1,5 @@
-# sticky-js
-[![npm version](https://badge.fury.io/js/sticky-js.svg)](https://badge.fury.io/js/sticky-js)
-[![Bower version](https://badge.fury.io/bo/sticky.js.svg)](https://badge.fury.io/bo/sticky.js)
+# sticky-ts
+WIP: This library is a fork from [Rgalus' sticky js](https://github.com/rgalus/sticky-js), and it aims to add TS support, add features and fix bugs
 
 > Sticky-js is a library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
 
@@ -58,7 +57,7 @@ var sticky = new Sticky('.selector');
 
 ## Examples
 
-Multiple sticky elements with data-sticky-container and [options](https://github.com/rgalus/sticky-js#available-options)
+Multiple sticky elements with data-sticky-container and [options](https://github.com/SuddenDev/sticky-ts#available-options)
 
 ```html
 <div class="row" data-sticky-container>
