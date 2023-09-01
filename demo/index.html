@@ -138,7 +138,9 @@
     var el = document.querySelector('.specific-selector')
 
     var sticky = new Sticky('[data-sticky]', {});
-    var stickyEl = new Sticky(el, {});
+    var stickyEl = new Sticky(el, {
+      onChange: (val) => {console.log("isSticky", val);}
+    });
 
     console.log(stickyEl);
 

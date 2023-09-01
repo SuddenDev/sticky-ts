@@ -2,7 +2,7 @@
  * Sticky.js
  * Library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
  *
- * @version 1.3.1
+ * @version 1.4.0
  * @author Dominik Tampe <hello@dtampe.com>
  * @repo https://github.com/SuddenDev/sticky-ts
  * @license https://github.com/SuddenDev/sticky-ts/blob/master/LICENSE
@@ -19,7 +19,7 @@ class Sticky {
     this.selector = selector;
     this.elements = [];
 
-    this.version = "1.3.1";
+    this.version = "1.4.0";
 
     this.vp = this.getViewportSize();
     this.body = document.querySelector("body");
@@ -32,7 +32,13 @@ class Sticky {
       stickyFor: options.stickyFor || 0,
       stickyClass: options.stickyClass || null,
       stickyContainer: options.stickyContainer || "body",
+      onChange: options.onChange || null,
     };
+
+    this.onChange =
+      this.options.onChange && typeof this.options.onChange === "function"
+        ? this.options.onChange
+        : null;
 
     this.updateScrollTopPosition = this.updateScrollTopPosition.bind(this);
 
@@ -283,6 +289,10 @@ class Sticky {
       if (element.sticky.stickyClass) {
         element.classList.add(element.sticky.stickyClass);
       }
+      if (this.onChange !== null && !element.sticky.on) {
+        element.sticky.on = true;
+        this.onChange(true);
+      }
     } else if (
       this.scrollTop >
       element.sticky.rect.top - element.sticky.marginTop
@@ -302,6 +312,10 @@ class Sticky {
         if (element.sticky.stickyClass) {
           element.classList.remove(element.sticky.stickyClass);
         }
+        if (this.onChange !== null && element.sticky.on) {
+          element.sticky.on = false;
+          this.onChange(false);
+        }
 
         this.css(element, {
           top:
@@ -316,6 +330,10 @@ class Sticky {
         if (element.sticky.stickyClass) {
           element.classList.add(element.sticky.stickyClass);
         }
+        if (this.onChange !== null && !element.sticky.on) {
+          element.sticky.on = true;
+          this.onChange(true);
+        }
 
         this.css(element, { top: element.sticky.marginTop + "px" });
       }
@@ -328,6 +346,10 @@ class Sticky {
 
       if (element.sticky.wrap) {
         this.css(element.parentNode, { display: "", width: "", height: "" });
+      }
+      if (this.onChange !== null && element.sticky.on) {
+        element.sticky.on = false;
+        this.onChange(false);
       }
     }
   }

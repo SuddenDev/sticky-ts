@@ -1,7 +1,7 @@
 # sticky-ts
 WIP: This library is a fork from [Rgalus' sticky js](https://github.com/rgalus/sticky-js), and it aims to add TS support, add features and fix bugs
 
-> Sticky-js is a library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
+> Sticky-ts is a library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
 
 [DEMO](https://rgalus.github.io/sticky-js/)
 
@@ -50,9 +50,9 @@ new Sticky([selector:string], [global options:object])
 
 CommonJS
 ```js
-var Sticky = require('sticky-js');
+var Sticky = require('sticky-ts');
 
-var sticky = new Sticky('.selector');
+var sticky = new Sticky('.selector'); // or a HTML element 
 ```
 
 ## Examples
@@ -75,7 +75,7 @@ Multiple sticky elements with data-sticky-container and [options](https://github
 
 <script src="sticky.min.js"></script>
 <script>
-  var sticky = new Sticky('.sticky');
+  var sticky = new Sticky('.sticky'); // or a HTML element 
 </script>
 ```
 
@@ -106,6 +106,28 @@ data-sticky-wrap | boolean | false | When it's `true` sticky element is wrapped 
 data-margin-top | number | 0 | Margin between page and sticky element when scrolled
 data-sticky-for | number | 0 | Breakpoint which when is bigger than viewport width, sticky is activated and when is smaller, then sticky is destroyed
 data-sticky-class | string | null | Class added to sticky element when it is stuck
+
+
+```js
+// or use it directly like this
+var sticky = new Sticky('#header', {
+   wrap: true,
+   marginTop: 20,
+   stickyClass: 'stick-me'
+});
+```
+
+## Events
+
+Currently there's only one event.
+
+### onChange
+
+```js
+var stickyEl = new Sticky(el, {
+  onChange: (val) => {console.log("isSticky", val);} // val: boolean if sticky
+});
+```
 
 ### Development
 
