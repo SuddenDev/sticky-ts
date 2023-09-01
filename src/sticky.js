@@ -1,50 +1,47 @@
-
 /**
  * Sticky.js
  * Library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
  *
- * @version 1.3.0
- * @author Rafal Galus <biuro@rafalgalus.pl>
- * @website https://rgalus.github.io/sticky-js/
- * @repo https://github.com/rgalus/sticky-js
- * @license https://github.com/rgalus/sticky-js/blob/master/LICENSE
+ * @version 1.3.1
+ * @author Dominik Tampe <hello@dtampe.com>
+ * @repo https://github.com/SuddenDev/sticky-ts
+ * @license https://github.com/SuddenDev/sticky-ts/blob/master/LICENSE
  */
 
 class Sticky {
   /**
    * Sticky instance constructor
    * @constructor
-   * @param {string} selector - Selector which we can find elements
+   * @param {string | HTMLElement | HTMLCollection} selector - Selector which we can find elements
    * @param {string} options - Global options for sticky elements (could be overwritten by data-{option}="" attributes)
    */
-  constructor(selector = '', options = {}) {
+  constructor(selector = "", options = {}) {
     this.selector = selector;
     this.elements = [];
 
-    this.version = '1.3.0';
+    this.version = "1.3.1";
 
     this.vp = this.getViewportSize();
-    this.body = document.querySelector('body');
+    this.body = document.querySelector("body");
 
     this.options = {
       wrap: options.wrap || false,
-      wrapWith: options.wrapWith || '<span></span>',
+      wrapWith: options.wrapWith || "<span></span>",
       marginTop: options.marginTop || 0,
       marginBottom: options.marginBottom || 0,
       stickyFor: options.stickyFor || 0,
       stickyClass: options.stickyClass || null,
-      stickyContainer: options.stickyContainer || 'body',
+      stickyContainer: options.stickyContainer || "body",
     };
 
     this.updateScrollTopPosition = this.updateScrollTopPosition.bind(this);
 
     this.updateScrollTopPosition();
-    window.addEventListener('load', this.updateScrollTopPosition);
-    window.addEventListener('scroll', this.updateScrollTopPosition);
+    window.addEventListener("load", this.updateScrollTopPosition);
+    window.addEventListener("scroll", this.updateScrollTopPosition);
 
     this.run();
   }
-
 
   /**
    * Function that waits for page to be fully loaded and then renders & activates every sticky element found with specified selector
@@ -53,7 +50,7 @@ class Sticky {
   run() {
     // wait for page to be fully loaded
     const pageLoaded = setInterval(() => {
-      if (document.readyState === 'complete') {
+      if (document.readyState === "complete") {
         clearInterval(pageLoaded);
 
         const elements = document.querySelectorAll(this.selector);
@@ -61,7 +58,6 @@ class Sticky {
       }
     }, 10);
   }
-
 
   /**
    * Function that assign needed variables for sticky element, that are used in future for calculations and other
@@ -75,11 +71,20 @@ class Sticky {
     // set default variables
     element.sticky.active = false;
 
-    element.sticky.marginTop = parseInt(element.getAttribute('data-margin-top')) || this.options.marginTop;
-    element.sticky.marginBottom = parseInt(element.getAttribute('data-margin-bottom')) || this.options.marginBottom;
-    element.sticky.stickyFor = parseInt(element.getAttribute('data-sticky-for')) || this.options.stickyFor;
-    element.sticky.stickyClass = element.getAttribute('data-sticky-class') || this.options.stickyClass;
-    element.sticky.wrap = element.hasAttribute('data-sticky-wrap') ? true : this.options.wrap;
+    element.sticky.marginTop =
+      parseInt(element.getAttribute("data-margin-top")) ||
+      this.options.marginTop;
+    element.sticky.marginBottom =
+      parseInt(element.getAttribute("data-margin-bottom")) ||
+      this.options.marginBottom;
+    element.sticky.stickyFor =
+      parseInt(element.getAttribute("data-sticky-for")) ||
+      this.options.stickyFor;
+    element.sticky.stickyClass =
+      element.getAttribute("data-sticky-class") || this.options.stickyClass;
+    element.sticky.wrap = element.hasAttribute("data-sticky-wrap")
+      ? true
+      : this.options.wrap;
     // @todo attribute for stickyContainer
     // element.sticky.stickyContainer = element.getAttribute('data-sticky-container') || this.options.stickyContainer;
     element.sticky.stickyContainer = this.options.stickyContainer;
@@ -90,8 +95,8 @@ class Sticky {
     element.sticky.rect = this.getRectangle(element);
 
     // fix when element is image that has not yet loaded and width, height = 0
-    if (element.tagName.toLowerCase() === 'img') {
-      element.onload = () => element.sticky.rect = this.getRectangle(element);
+    if (element.tagName.toLowerCase() === "img") {
+      element.onload = () => (element.sticky.rect = this.getRectangle(element));
     }
 
     if (element.sticky.wrap) {
@@ -102,17 +107,18 @@ class Sticky {
     this.activate(element);
   }
 
-
   /**
    * Wraps element into placeholder element
    * @function
    * @param {node} element - Element to be wrapped
    */
   wrapElement(element) {
-    element.insertAdjacentHTML('beforebegin', element.getAttribute('data-sticky-wrapWith') || this.options.wrapWith);
+    element.insertAdjacentHTML(
+      "beforebegin",
+      element.getAttribute("data-sticky-wrapWith") || this.options.wrapWith
+    );
     element.previousSibling.appendChild(element);
   }
-
 
   /**
    * Function that activates element when specified conditions are met and then initalise events
@@ -121,9 +127,11 @@ class Sticky {
    */
   activate(element) {
     if (
-      ((element.sticky.rect.top + element.sticky.rect.height) < (element.sticky.container.rect.top + element.sticky.container.rect.height))
-      && (element.sticky.stickyFor < this.vp.width)
-      && !element.sticky.active
+      element.sticky.rect.top + element.sticky.rect.height <
+        element.sticky.container.rect.top +
+          element.sticky.container.rect.height &&
+      element.sticky.stickyFor < this.vp.width &&
+      !element.sticky.active
     ) {
       element.sticky.active = true;
     }
@@ -145,7 +153,6 @@ class Sticky {
     this.setPosition(element);
   }
 
-
   /**
    * Function which is adding onResizeEvents to window listener and assigns function to element as resizeListener
    * @function
@@ -153,9 +160,8 @@ class Sticky {
    */
   initResizeEvents(element) {
     element.sticky.resizeListener = () => this.onResizeEvents(element);
-    window.addEventListener('resize', element.sticky.resizeListener);
+    window.addEventListener("resize", element.sticky.resizeListener);
   }
-
 
   /**
    * Removes element listener from resize event
@@ -163,9 +169,8 @@ class Sticky {
    * @param {node} element - Element from which listener is deleted
    */
   destroyResizeEvents(element) {
-    window.removeEventListener('resize', element.sticky.resizeListener);
+    window.removeEventListener("resize", element.sticky.resizeListener);
   }
-
 
   /**
    * Function which is fired when user resize window. It checks if element should be activated or deactivated and then run setPosition function
@@ -179,22 +184,24 @@ class Sticky {
     element.sticky.container.rect = this.getRectangle(element.sticky.container);
 
     if (
-      ((element.sticky.rect.top + element.sticky.rect.height) < (element.sticky.container.rect.top + element.sticky.container.rect.height))
-      && (element.sticky.stickyFor < this.vp.width)
-      && !element.sticky.active
+      element.sticky.rect.top + element.sticky.rect.height <
+        element.sticky.container.rect.top +
+          element.sticky.container.rect.height &&
+      element.sticky.stickyFor < this.vp.width &&
+      !element.sticky.active
     ) {
       element.sticky.active = true;
     } else if (
-      ((element.sticky.rect.top + element.sticky.rect.height) >= (element.sticky.container.rect.top + element.sticky.container.rect.height))
-      || element.sticky.stickyFor >= this.vp.width
-      && element.sticky.active
+      element.sticky.rect.top + element.sticky.rect.height >=
+        element.sticky.container.rect.top +
+          element.sticky.container.rect.height ||
+      (element.sticky.stickyFor >= this.vp.width && element.sticky.active)
     ) {
       element.sticky.active = false;
     }
 
     this.setPosition(element);
   }
-
 
   /**
    * Function which is adding onScrollEvents to window listener and assigns function to element as scrollListener
@@ -203,9 +210,8 @@ class Sticky {
    */
   initScrollEvents(element) {
     element.sticky.scrollListener = () => this.onScrollEvents(element);
-    window.addEventListener('scroll', element.sticky.scrollListener);
+    window.addEventListener("scroll", element.sticky.scrollListener);
   }
-
 
   /**
    * Removes element listener from scroll event
@@ -213,9 +219,8 @@ class Sticky {
    * @param {node} element - Element from which listener is deleted
    */
   destroyScrollEvents(element) {
-    window.removeEventListener('scroll', element.sticky.scrollListener);
+    window.removeEventListener("scroll", element.sticky.scrollListener);
   }
-
 
   /**
    * Function which is fired when user scroll window. If element is active, function is invoking setPosition function
@@ -228,16 +233,15 @@ class Sticky {
     }
   }
 
-
   /**
    * Main function for the library. Here are some condition calculations and css appending for sticky element when user scroll window
    * @function
    * @param {node} element - Element that will be positioned if it's active
    */
   setPosition(element) {
-    this.css(element, { position: '', width: '', top: '', left: '' });
+    this.css(element, { position: "", width: "", top: "", left: "" });
 
-    if ((this.vp.height < element.sticky.rect.height) || !element.sticky.active) {
+    if (this.vp.height < element.sticky.rect.height || !element.sticky.active) {
       return;
     }
 
@@ -247,64 +251,73 @@ class Sticky {
 
     if (element.sticky.wrap) {
       this.css(element.parentNode, {
-        display: 'block',
-        width: element.sticky.rect.width + 'px',
-        height: element.sticky.rect.height + 'px',
+        display: "block",
+        width: element.sticky.rect.width + "px",
+        height: element.sticky.rect.height + "px",
       });
     }
 
     if (
-      element.sticky.rect.top === 0
-      && element.sticky.container === this.body
+      element.sticky.rect.top === 0 &&
+      element.sticky.container === this.body
     ) {
       this.css(element, {
-        position: 'fixed',
-        top: element.sticky.rect.top + 'px',
-        left: element.sticky.rect.left + 'px',
-        width: element.sticky.rect.width + 'px',
+        position: "fixed",
+        top: element.sticky.rect.top + "px",
+        left: element.sticky.rect.left + "px",
+        width: element.sticky.rect.width + "px",
       });
       if (element.sticky.stickyClass) {
         element.classList.add(element.sticky.stickyClass);
       }
-    } else if (this.scrollTop > (element.sticky.rect.top - element.sticky.marginTop)) {
+    } else if (
+      this.scrollTop >
+      element.sticky.rect.top - element.sticky.marginTop
+    ) {
       this.css(element, {
-        position: 'fixed',
-        width: element.sticky.rect.width + 'px',
-        left: element.sticky.rect.left + 'px',
+        position: "fixed",
+        width: element.sticky.rect.width + "px",
+        left: element.sticky.rect.left + "px",
       });
 
       if (
-        (this.scrollTop + element.sticky.rect.height + element.sticky.marginTop)
-        > (element.sticky.container.rect.top + element.sticky.container.offsetHeight - element.sticky.marginBottom)
+        this.scrollTop + element.sticky.rect.height + element.sticky.marginTop >
+        element.sticky.container.rect.top +
+          element.sticky.container.offsetHeight -
+          element.sticky.marginBottom
       ) {
-
         if (element.sticky.stickyClass) {
           element.classList.remove(element.sticky.stickyClass);
         }
 
         this.css(element, {
-          top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height + element.sticky.marginBottom) + 'px' }
-        );
+          top:
+            element.sticky.container.rect.top +
+            element.sticky.container.offsetHeight -
+            (this.scrollTop +
+              element.sticky.rect.height +
+              element.sticky.marginBottom) +
+            "px",
+        });
       } else {
         if (element.sticky.stickyClass) {
           element.classList.add(element.sticky.stickyClass);
         }
 
-        this.css(element, { top: element.sticky.marginTop + 'px' });
+        this.css(element, { top: element.sticky.marginTop + "px" });
       }
     } else {
       if (element.sticky.stickyClass) {
         element.classList.remove(element.sticky.stickyClass);
       }
 
-      this.css(element, { position: '', width: '', top: '', left: '' });
+      this.css(element, { position: "", width: "", top: "", left: "" });
 
       if (element.sticky.wrap) {
-        this.css(element.parentNode, { display: '', width: '', height: '' });
+        this.css(element.parentNode, { display: "", width: "", height: "" });
       }
     }
   }
-
 
   /**
    * Function that updates element sticky rectangle (with sticky container), then activate or deactivate element, then update position if it's active
@@ -313,21 +326,22 @@ class Sticky {
   update() {
     this.forEach(this.elements, (element) => {
       element.sticky.rect = this.getRectangle(element);
-      element.sticky.container.rect = this.getRectangle(element.sticky.container);
+      element.sticky.container.rect = this.getRectangle(
+        element.sticky.container
+      );
 
       this.activate(element);
       this.setPosition(element);
     });
   }
 
-
   /**
    * Destroys sticky element, remove listeners
    * @function
    */
   destroy() {
-    window.removeEventListener('load', this.updateScrollTopPosition);
-    window.removeEventListener('scroll', this.updateScrollTopPosition);
+    window.removeEventListener("load", this.updateScrollTopPosition);
+    window.removeEventListener("scroll", this.updateScrollTopPosition);
 
     this.forEach(this.elements, (element) => {
       this.destroyResizeEvents(element);
@@ -335,14 +349,13 @@ class Sticky {
       /**
        * Remove added styles
        */
-      element.style.removeProperty('position');
-      element.style.removeProperty('width');
-      element.style.removeProperty('top');
-      element.style.removeProperty('left');
+      element.style.removeProperty("position");
+      element.style.removeProperty("width");
+      element.style.removeProperty("top");
+      element.style.removeProperty("left");
       delete element.sticky;
     });
   }
-
 
   /**
    * Function that returns container element in which sticky element is stuck (if is not specified, then it's stuck to body)
@@ -354,16 +367,15 @@ class Sticky {
     let container = element.parentNode;
 
     while (
-      !container.hasAttribute('data-sticky-container')
-      && !container.parentNode.querySelector(element.sticky.stickyContainer)
-      && container !== this.body
-      ) {
+      !container.hasAttribute("data-sticky-container") &&
+      !container.parentNode.querySelector(element.sticky.stickyContainer) &&
+      container !== this.body
+    ) {
       container = container.parentNode;
     }
 
     return container;
   }
-
 
   /**
    * Function that returns element rectangle & position (width, height, top, left)
@@ -372,10 +384,18 @@ class Sticky {
    * @return {object}
    */
   getRectangle(element) {
-    this.css(element, { position: '', width: '', top: '', left: '' });
+    this.css(element, { position: "", width: "", top: "", left: "" });
 
-    const width = Math.max(element.offsetWidth, element.clientWidth, element.scrollWidth);
-    const height = Math.max(element.offsetHeight, element.clientHeight, element.scrollHeight);
+    const width = Math.max(
+      element.offsetWidth,
+      element.clientWidth,
+      element.scrollWidth
+    );
+    const height = Math.max(
+      element.offsetHeight,
+      element.clientHeight,
+      element.scrollHeight
+    );
 
     let top = 0;
     let left = 0;
@@ -384,11 +404,10 @@ class Sticky {
       top += element.offsetTop || 0;
       left += element.offsetLeft || 0;
       element = element.offsetParent;
-    } while(element);
+    } while (element);
 
     return { top, left, width, height };
   }
-
 
   /**
    * Function that returns viewport dimensions
@@ -397,11 +416,16 @@ class Sticky {
    */
   getViewportSize() {
     return {
-      width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-      height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+      width: Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0
+      ),
+      height: Math.max(
+        document.documentElement.clientHeight,
+        window.innerHeight || 0
+      ),
     };
   }
-
 
   /**
    * Function that updates window scroll position
@@ -409,9 +433,10 @@ class Sticky {
    * @return {number}
    */
   updateScrollTopPosition() {
-    this.scrollTop = (window.pageYOffset || document.scrollTop)  - (document.clientTop || 0) || 0;
+    this.scrollTop =
+      (window.pageYOffset || document.scrollTop) - (document.clientTop || 0) ||
+      0;
   }
-
 
   /**
    * Helper function for loops
@@ -424,7 +449,6 @@ class Sticky {
       callback(array[i]);
     }
   }
-
 
   /**
    * Helper function to add/remove css properties for specified element.
@@ -441,15 +465,14 @@ class Sticky {
   }
 }
 
-
 /**
  * Export function that supports AMD, CommonJS and Plain Browser.
  */
 ((root, factory) => {
-  if (typeof exports !== 'undefined') {
+  if (typeof exports !== "undefined") {
     module.exports = factory;
-  } else if (typeof define === 'function' && define.amd) {
-    define([], function() {
+  } else if (typeof define === "function" && define.amd) {
+    define([], function () {
       return factory;
     });
   } else {
